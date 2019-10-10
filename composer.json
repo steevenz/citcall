@@ -1,35 +1,38 @@
 {
-  "name": "steevenz/citcall",
-  "description": "Citcall API PHP Library",
-  "license": "MIT",
-  "type": "php-class",
-  "keywords": [
-    "citcall",
-    "api"
-  ],
-  "authors": [
-    {
-      "name": "Steeve Andrian",
-      "email": "steevenz@steevenz.com",
-      "homepage": "http://www.steevenz.com",
-      "role": "PHP Programmer"
+    "name": "steevenz/citcall",
+    "description": "Citcall API PHP Library",
+    "license": "MIT",
+    "type": "php-class",
+    "keywords": [
+        "citcall",
+        "api"
+    ],
+    "authors": [
+        {
+            "name": "Steeve Andrian",
+            "email": "steevenz@steevenz.com",
+            "homepage": "http://www.steevenz.com",
+            "role": "PHP Programmer"
+        }
+    ],
+    "support": {
+        "email": "steevenz@steevenz.com",
+        "issues": "https://github.com/steevenz/citcall/issues"
+    },
+    "links": {
+        "info": "https://github.com/steevenz/citcall",
+        "wiki": "https://github.com/steevenz/citcall/wiki"
+    },
+    "require": {
+        "php": "^7.2.0",
+        "o2system/curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Steevenz\\Citccall\\": "src"
+        },
+        "files" : [
+            "src/Citcall.php"
+        ]
     }
-  ],
-  "support": {
-    "email": "steevenz@steevenz.com",
-    "issues": "https://github.com/steevenz/citcall/issues"
-  },
-  "links": {
-    "info": "https://github.com/steevenz/citcall",
-    "wiki": "https://github.com/steevenz/citcall/wiki"
-  },
-  "require": {
-    "php": "^7.2.0",
-    "o2system/spl": "*"
-  },
-  "autoload": {
-    "psr-4": {
-      "Steevenz\\Citccall\\": "src"
-    }
-  }
 }
