@@ -27,7 +27,7 @@ class Citcall
 {
     use ConfigCollectorTrait;
     use ErrorCollectorTrait;
-    
+
     /**
      * Citcall::$response
      *
@@ -52,6 +52,7 @@ class Citcall
         $defaultConfig = [
             'apiUrl'   => 'https://gateway.citcall.com/',
             'version'  => 'v3',
+            'appName'  => null,
             'userId'   => null,
             'senderId' => null,
             'apiKey'   => null,
@@ -163,8 +164,8 @@ class Citcall
         }
 
         $uri = (new Uri($this->config[ 'apiUrl' ]))
-            ->withPath($this->config[ 'version' ])
-            ->withPath($path);
+            ->addPath($this->config[ 'version' ])
+            ->addPath($path);
 
         $request = new Curl\Request();
         $request->setHeaders([
@@ -235,7 +236,7 @@ class Citcall
             'senderid' => $senderId,
             'msisdn'   => $msisdn,
             'text'     => $message,
-        ]);
+        ], 'POST');
     }
     // ------------------------------------------------------------------------
 
@@ -252,7 +253,7 @@ class Citcall
      * @return  mixed
      * @throws \O2System\Spl\Exceptions\Logic\BadFunctionCall\BadPhpExtensionCallException
      */
-    public function call($msisdn, $gateway, $async = false)
+    public function call($msisdn, $gateway = 1, $async = false)
     {
         if (false === ($msisdn = $this->validateMsisdn($msisdn))) {
             throw new \InvalidArgumentException('Citcall: Invalid MSISDN Number');
@@ -267,7 +268,7 @@ class Citcall
         return $this->request($path, [
             'msisdn'  => $msisdn,
             'gateway' => (int)$gateway,
-        ]);
+        ], 'POST');
     }
     // ------------------------------------------------------------------------
 
@@ -276,36 +277,38 @@ class Citcall
      *
      * Send SMS
      *
-     * @param string $msisdn MSISDN Number
-     * @param string $token  OTP Token Code
+     * @param string $msisdn  MSISDN Number
+     * @param string $token   OTP Token Code
+     * @param int    $expires Expires time in seconds
      *
      * @access  public
      * @return  mixed
      * @throws \O2System\Spl\Exceptions\Logic\BadFunctionCall\BadPhpExtensionCallException
      */
-    public function sendOtp($msisdn, $token = null, $expires = 0)
+    public function sendOtp($msisdn, $token, $expires = 0)
     {
         if (false === ($msisdn = $this->validateMsisdn($msisdn))) {
             throw new \InvalidArgumentException('Citcall: Invalid MSISDN Number');
         }
 
         $params[ 'msisdn' ] = $msisdn;
+        $params[ 'senderid' ] = empty($this->config[ 'senderId' ]) ? $this->config[ 'userId' ] : $this->config[ 'senderId' ];
 
-        if (isset($token)) {
-            if (strlen($token) < 4) {
-                throw new \InvalidArgumentException('Citcall: OTP Code minimum length is 5 digit');
-            } elseif (strlen($token) > 8) {
-                throw new \InvalidArgumentException('Citcall: OTP Code maximum length is 8 digit');
-            }
-
-            $params[ 'token' ] = trim($token);
+        $token = trim($token);
+        if (strlen($token) < 4) {
+            throw new \InvalidArgumentException('Citcall: OTP Code minimum length is 5 digit');
+        } elseif (strlen($token) > 8) {
+            throw new \InvalidArgumentException('Citcall: OTP Code maximum length is 8 digit');
         }
+
+        $params[ 'token' ] = $token;
+        $params[ 'text' ] = $params[ 'token' ] . ' is your ' . $this->config[ 'appName' ] . 'OTP code.';
 
         if ($expires > 0) {
             $params[ 'valid_time' ] = $expires;
         }
 
-        return $this->request('smsotp', $params);
+        return $this->request('smsotp', $params, 'POST');
     }
     // ------------------------------------------------------------------------
 
@@ -328,7 +331,7 @@ class Citcall
             'trxid'  => $trxId,
             'msisdn' => $msisdn,
             'token'  => $token,
-        ]);
+        ], 'POST');
     }
     // ------------------------------------------------------------------------
 
@@ -356,14 +359,14 @@ class Citcall
     public function getCallback()
     {
         $result = new Curl\Response\SimpleJSONElement([
-            'rc' => 0,
-            'msg' => 'invalid callback response'
+            'rc'  => 0,
+            'msg' => 'invalid callback response',
         ]);
 
-        if($response = file_get_contents('php://input')) {
+        if ($response = file_get_contents('php://input')) {
             $data = json_decode($response, true);
 
-            if(json_last_error() !== JSON_ERROR_NONE) {
+            if (json_last_error() !== JSON_ERROR_NONE) {
                 $result = new Curl\Response\SimpleJSONElement($data);
             }
         }

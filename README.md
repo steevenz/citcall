@@ -30,6 +30,7 @@ use Steevenz\Citcall;
  */
  $citcall = new Citcall([
    'version'  => 'v3', // default v3
+   'appName'  => 'My App',
    'userId'   => 'USERID',
    'senderId' => 'SENDERID',
    'apiKey'   => 'APIKEY',
@@ -53,7 +54,7 @@ use Steevenz\Citcall;
  * Melakukan missed call
  *
  * @param string Phone Number
- * @param int    Gateway number (1-5)
+ * @param int    Gateway number (1-5) (1 by default)
  * @param bool   Asyncronous Missed Call (false by default)
  *
  * @return object|bool
