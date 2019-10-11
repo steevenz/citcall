@@ -82,6 +82,24 @@ class Citcall
     // ------------------------------------------------------------------------
 
     /**
+     * Citcall::setAppName
+     *
+     * Set Citcall App Name.
+     *
+     * @param string $appName Application Name
+     *
+     * @access  public
+     * @return  static
+     */
+    public function setAppName($appName)
+    {
+        $this->setConfig('appName', $appName);
+
+        return $this;
+    }
+    // ------------------------------------------------------------------------
+
+    /**
      * Citcall::setUserId
      *
      * Set Citcall User Id.
