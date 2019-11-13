@@ -75,7 +75,7 @@ class Citcall
      */
     public function setApiUrl($apiUrl)
     {
-        $this->setConfig('apiUrl', $serverIp);
+        $this->setConfig('apiUrl', $apiUrl);
 
         return $this;
     }
@@ -216,13 +216,13 @@ class Citcall
      */
     protected function validateMsisdn($msisdn)
     {
-        if (preg_match('/^(62[1-9]{1}[0-9]{1,2})[0-9]{6,8}$/', $msisdn) == 1) {
+        if (preg_match('/^(62[1-9]{1}[0-9]{1,2})[0-9]{6,9}$/', $msisdn) == 1) {
             $msisdn = '0' . substr($msisdn, 2);
-        } elseif (preg_match('/^(\+62[1-9]{1}[0-9]{1,2})[0-9]{6,8}$/', $msisdn) == 1) {
+        } elseif (preg_match('/^(\+62[1-9]{1}[0-9]{1,2})[0-9]{6,9}$/', $msisdn) == 1) {
             $msisdn = '0' . substr($msisdn, 3);
         }
 
-        if (preg_match('/^(0[1-9]{1}[0-9]{1,2})[0-9]{6,8}$/', $msisdn) == 1) {
+        if (preg_match('/^(0[1-9]{1}[0-9]{1,2})[0-9]{6,9}$/', $msisdn) == 1) {
             return trim($msisdn);
         }
 
@@ -259,7 +259,7 @@ class Citcall
     // ------------------------------------------------------------------------
 
     /**
-     * Citcall::call
+     * Citcall::missedCallOtp
      *
      * Async Missed Call
      *
@@ -271,7 +271,7 @@ class Citcall
      * @return  mixed
      * @throws \O2System\Spl\Exceptions\Logic\BadFunctionCall\BadPhpExtensionCallException
      */
-    public function call($msisdn, $gateway = 1, $async = false)
+    public function missedCallOtp($msisdn, $gateway = 1, $async = false)
     {
         if (false === ($msisdn = $this->validateMsisdn($msisdn))) {
             throw new \InvalidArgumentException('Citcall: Invalid MSISDN Number');
@@ -343,6 +343,7 @@ class Citcall
             throw new \InvalidArgumentException('Citcall: Invalid MSISDN Number');
         }
 
+        $trxId = trim($trxId);
         $token = trim($token);
 
         return $this->request('verify', [
