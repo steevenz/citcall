@@ -51,7 +51,7 @@ use Steevenz\Citcall;
 
 /*
  * --------------------------------------------------------------
- * Melakukan missed call
+ * Melakukan missed call otp
  *
  * @param string Phone Number
  * @param int    Gateway number (1-5) (1 by default)
@@ -60,7 +60,7 @@ use Steevenz\Citcall;
  * @return object|bool
  * --------------------------------------------------------------
  */
- $result = $citcall->call('082123456789', 1, false);
+ $result = $citcall->missedCallOtp('082123456789', 1, false);
 
 /*
  * --------------------------------------------------------------
